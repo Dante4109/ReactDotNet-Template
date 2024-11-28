@@ -1,4 +1,4 @@
-namespace ReactCoreFinal.Server
+namespace QandA
 {
     public class WeatherForecast
     {

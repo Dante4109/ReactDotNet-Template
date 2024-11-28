@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace ReactCoreFinal.Server.Controllers
+namespace QandA.Controllers
 {
     [ApiController]
     [Route("[controller]")]

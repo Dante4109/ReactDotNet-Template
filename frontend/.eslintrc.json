@@ -1,0 +1,7 @@
+// The list of available ESLint rules can be found at https://eslint.org/docs/rules/.
+
+{  "extends": "react-app",
+    "rules": {    
+      "no-debugger":"warn"  
+    }
+}
