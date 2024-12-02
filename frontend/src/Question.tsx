@@ -5,6 +5,8 @@ import { gray2, gray3 } from './Styles';
 import React from 'react';
 import { QuestionData } from './QuestionsData';
 
+import { Link } from 'react-router-dom';
+
 interface Props {
   data: QuestionData;
   showContent?: boolean;
@@ -16,14 +18,16 @@ export const Question = ({ data, showContent = true }: Props) => (
       padding: 10px 0px;
     `}
   >
-    <div
+    <Link
       css={css`
-        padding: 10px 0px;
-        font-size: 19px;
+        text-decoration: none;
+        color: ${gray2};
       `}
+      to={`/questions/${data.questionId}`}
     >
       {data.title}
-    </div>
+    </Link>
+
     {showContent && (
       <div
         css={css`

@@ -47,7 +47,7 @@ export const AskPage = () => {
           <FieldContainer>
             <FieldLabel htmlFor="title">Title</FieldLabel>
             <FieldInput
-              {...register('title', { required: true, minLength: 50 })}
+              {...register('title', { required: true, minLength: 10 })}
             />
             {errors.title && errors.title.type === 'required' && (
               <FieldError>You must enter the question title</FieldError>
@@ -59,14 +59,14 @@ export const AskPage = () => {
           <FieldContainer>
             <FieldLabel htmlFor="content">Content</FieldLabel>
             <FieldTextArea
-              {...register('content', { required: true, minLength: 50 })}
+              {...register('content', { required: true, minLength: 30 })}
             />
             {errors.content && errors.content.type === 'required' && (
               <FieldError>You must enter the question content</FieldError>
             )}
             {errors.content && errors.content.type === 'minLength' && (
               <FieldError>
-                The content must be at least 50 characters
+                The content must be at least 30 characters
               </FieldError>
             )}
           </FieldContainer>
