@@ -1,4 +1,27 @@
+using DbUp;
+using DbUp.Engine;
+using DbUp.SqlServer;
+using Microsoft.Extensions.Configuration;
+using System.Reflection;
+
 var builder = WebApplication.CreateBuilder(args);
+IConfiguration configuration = builder.Configuration;
+
+// Connection string to your SQL Server database
+var connectionString = configuration.GetConnectionString("DefaultConnection");
+var mySettings = new MySettings();
+
+// Create a DbUp upgrader instance
+var upgrader = DeployChanges.To
+    .SqlDatabase(connectionString)
+    .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
+    .LogToConsole()
+    .Build();
+
+// Execute the upgrade process if needed
+if (upgrader.IsUpgradeRequired()) {
+    var result = upgrader.PerformUpgrade();
+}
 
 // Add services to the container.
 
