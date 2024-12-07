@@ -98,14 +98,14 @@ namespace api.Controllers
         [HttpPost("answer")]
         public ActionResult<AnswerGetResponse> PostAnswer(AnswerPostRequest answerPostRequest)
         {
-            var questionExists = _dataRepository.QuestionExists(answerPostRequest.QuestionId.Value);
+            var questionExists = _dataRepository.QuestionExists(answerPostRequest.QuestionId);
             if (!questionExists)
             {
                 return NotFound();
             }
             var savedAnswer = _dataRepository.PostAnswer(new AnswerPostFullRequest
             {
-                QuestionId = answerPostRequest.QuestionId.Value,
+                QuestionId = answerPostRequest.QuestionId,
                 Content = answerPostRequest.Content,
                 UserId = "1",
                 UserName = "bob.test@test.com",
@@ -113,6 +113,5 @@ namespace api.Controllers
             });
             return savedAnswer;
         }
-
     }
 }
