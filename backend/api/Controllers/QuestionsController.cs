@@ -20,15 +20,15 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<QuestionGetManyResponse> GetQuestions(string search)
-        {
-            if (string.IsNullOrEmpty(search))
-            {
-                return _dataRepository.GetQuestions();
-            }
-            else
-            {
-                return _dataRepository.GetQuestionsBySearch(search);
+        public IEnumerable<QuestionGetManyResponse> GetQuestions(string search, bool includeAnswers, int page = 1, int pageSize = 20) {
+            if (string.IsNullOrEmpty(search)) {
+                if (includeAnswers) {
+                    return _dataRepository.GetQuestionsWithAnswers();
+                } else {
+                    return _dataRepository.GetQuestions();
+                }
+            } else {
+                return _dataRepository.GetQuestionsBySearchWithPaging(search, page, pageSize);
             }
         }
 
