@@ -33,7 +33,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDataRepository, DataRepository>();
 
+// Add memory cache 
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<IQuestionCache, QuestionCache>();
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -47,5 +52,6 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();
+
 
 app.Run();
