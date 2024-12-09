@@ -33,12 +33,15 @@ namespace api.Controllers
         }
 
         [HttpGet("unanswered")]
-        public IEnumerable<QuestionGetManyResponse> GetUnansweredQuestions()
-        {
-            return _dataRepository.GetUnansweredQuestions();
-        }
 
-        [HttpGet("{questionId}")]
+        public async Task<IEnumerable<QuestionGetManyResponse>>
+            GetUnansweredQuestions() {
+
+            return await _dataRepository.
+
+            GetUnansweredQuestionsAsync();
+
+        }
         public ActionResult<QuestionGetSingleResponse> GetQuestion(int questionId)
         {
             var question = _dataRepository.GetQuestion(questionId);
