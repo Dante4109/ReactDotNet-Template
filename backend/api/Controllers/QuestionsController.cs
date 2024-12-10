@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.Data;
 using api.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {
@@ -63,6 +64,7 @@ namespace api.Controllers
             return question;
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult<QuestionGetSingleResponse> PostQuestion(QuestionPostRequest questionPostRequest)
         {
@@ -77,6 +79,7 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetQuestion), new { questionId = savedQuestion.QuestionId }, savedQuestion);
         }
 
+        [Authorize]
         [HttpPut("{questionId}")]
         public ActionResult<QuestionGetSingleResponse> PutQuestion(int questionId, QuestionPutRequest questionPutRequest)
         {
@@ -97,6 +100,7 @@ namespace api.Controllers
             return savedQuestion;
         }
 
+        [Authorize]
         [HttpDelete("{questionId}")]
         public ActionResult DeleteQuestion(int questionId)
         {
@@ -110,6 +114,7 @@ namespace api.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPost("answer")]
         public ActionResult<AnswerGetResponse> PostAnswer(AnswerPostRequest answerPostRequest)
         {

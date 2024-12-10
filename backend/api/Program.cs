@@ -1,9 +1,13 @@
 using api.Data;
+using Auth0.AspNetCore.Authentication;
 using DbUp;
 using DbUp.Engine;
 using DbUp.SqlServer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
@@ -37,6 +41,38 @@ builder.Services.AddScoped<IDataRepository, DataRepository>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IQuestionCache, QuestionCache>();
 
+// Add OAuth
+
+var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options => {
+    options.Authority = domain;
+    options.Audience = builder.Configuration["Auth0:Audience"];
+    options.TokenValidationParameters = new TokenValidationParameters {
+        NameClaimType = ClaimTypes.NameIdentifier
+    };
+});
+
+
+
+//builder.Services.AddAuth0WebAppAuthentication(options => {
+//    options.Domain = builder.Configuration["Auth0:Domain"];
+//    options.ClientId = builder.Configuration["Auth0:ClientId"];
+//});
+
+//builder.Services.AddAuthentication(options => {
+//    options.DefaultAuthenticateScheme =
+//      JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme =
+//      JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(options =>
+//{
+//    options.Authority =
+//    builder.Configuration["Auth0:Authority"];
+//    options.Audience =
+//    builder.Configuration["Auth0:Audience"];
+//});
+
 var app = builder.Build();
 
 
@@ -50,6 +86,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
