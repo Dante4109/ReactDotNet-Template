@@ -60,12 +60,12 @@ namespace api.Controllers
         }
 
         [HttpGet("{questionId}")]
-        public ActionResult<QuestionGetSingleResponse> GetQuestion(int questionId)
+        public async Task<ActionResult<QuestionGetSingleResponse>> GetQuestion(int questionId)
         {
             var question = _cache.Get(questionId);
             if (question == null)
             {
-                question = _dataRepository.GetQuestion(questionId);
+                question = await _dataRepository.GetQuestion(questionId);
                 if (question == null)
                 {
                     return NotFound();
@@ -93,9 +93,9 @@ namespace api.Controllers
 
         [Authorize(Policy = "MustBeQuestionAuthor")]
         [HttpPut("{questionId}")]
-        public ActionResult<QuestionGetSingleResponse> PutQuestion(int questionId, QuestionPutRequest questionPutRequest)
+        public async Task<ActionResult<QuestionGetSingleResponse>> PutQuestion(int questionId, QuestionPutRequest questionPutRequest)
         {
-            var question = _dataRepository.GetQuestion(questionId);
+            var question = await _dataRepository.GetQuestion(questionId);
             if (question == null)
             {
                 return NotFound();
