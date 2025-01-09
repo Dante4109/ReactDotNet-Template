@@ -1,9 +1,11 @@
+using api.Authorization;
 using api.Data;
 using Auth0.AspNetCore.Authentication;
 using DbUp;
 using DbUp.Engine;
 using DbUp.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
@@ -41,8 +43,7 @@ builder.Services.AddScoped<IDataRepository, DataRepository>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IQuestionCache, QuestionCache>();
 
-// Add OAuth
-
+// Add Auth0
 var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options => {
@@ -53,6 +54,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
 });
 
+// Add HTTP Client
+
+builder.Services.AddHttpClient();
+
+// Add Authorization policy
+builder.Services.AddAuthorization(options =>
+  options.AddPolicy("MustBeQuestionAuthor", policy
+   =>
+    policy.Requirements
+      .Add(new MustBeQuestionAuthorRequirement())));
+builder.Services.AddScoped<IAuthorizationHandler, MustBeQuestionAuthorHandler>();
 
 
 //builder.Services.AddAuth0WebAppAuthentication(options => {
