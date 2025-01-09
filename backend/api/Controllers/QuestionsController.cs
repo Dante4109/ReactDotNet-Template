@@ -34,29 +34,29 @@ namespace api.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<QuestionGetManyResponse> GetQuestions(string search, bool includeAnswers, int page = 1, int pageSize = 20)
+        public async Task<IEnumerable<QuestionGetManyResponse>> GetQuestions(string search, bool includeAnswers, int page = 1, int pageSize = 20)
         {
             if (string.IsNullOrEmpty(search))
             {
                 if (includeAnswers)
                 {
-                    return _dataRepository.GetQuestionsWithAnswers();
+                    return await _dataRepository.GetQuestionsWithAnswers();
                 }
                 else
                 {
-                    return _dataRepository.GetQuestions();
+                    return await _dataRepository.GetQuestions();
                 }
             }
             else
             {
-                return _dataRepository.GetQuestionsBySearchWithPaging(search, page, pageSize);
+                return await _dataRepository.GetQuestionsBySearchWithPaging(search, page, pageSize);
             }
         }
 
         [HttpGet("unanswered")]
         public async Task<IEnumerable<QuestionGetManyResponse>> GetUnansweredQuestions()
         {
-            return await _dataRepository.GetUnansweredQuestionsAsync();
+            return await _dataRepository.GetUnansweredQuestions();
         }
 
         [HttpGet("{questionId}")]
@@ -79,13 +79,12 @@ namespace api.Controllers
         [HttpPost]
         public async Task<ActionResult<QuestionGetSingleResponse>> PostQuestion(QuestionPostRequest questionPostRequest)
         {
-            var savedQuestion = _dataRepository.PostQuestion(new QuestionPostFullRequest
+            var savedQuestion = await _dataRepository.PostQuestion(new QuestionPostFullRequest
             {
                 Title = questionPostRequest.Title,
                 Content = questionPostRequest.Content,
-                UserId = 
-                User.FindFirst(ClaimTypes.NameIdentifier).Value,
                 UserName = await GetUserName(),
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value,
                 Created = DateTime.UtcNow
             });
             return CreatedAtAction(nameof(GetQuestion), new { questionId = savedQuestion.QuestionId }, savedQuestion);
@@ -107,7 +106,7 @@ namespace api.Controllers
               string.IsNullOrEmpty(questionPutRequest.Content) ?
                 question.Content :
                 questionPutRequest.Content;
-            var savedQuestion = _dataRepository.PutQuestion(questionId, questionPutRequest);
+            var savedQuestion = await _dataRepository.PutQuestion(questionId, questionPutRequest);
             _cache.Remove(savedQuestion.QuestionId);
             return savedQuestion;
         }
@@ -128,14 +127,14 @@ namespace api.Controllers
 
         [Authorize]
         [HttpPost("answer")]
-        public ActionResult<AnswerGetResponse> PostAnswer(AnswerPostRequest answerPostRequest)
+        public async Task<ActionResult<AnswerGetResponse>> PostAnswer(AnswerPostRequest answerPostRequest)
         {
-            var questionExists = _dataRepository.QuestionExists(answerPostRequest.QuestionId);
+            var questionExists = await _dataRepository.QuestionExists(answerPostRequest.QuestionId);
             if (!questionExists)
             {
                 return NotFound();
             }
-            var savedAnswer = _dataRepository.PostAnswer(new AnswerPostFullRequest
+            var savedAnswer = await _dataRepository.PostAnswer(new AnswerPostFullRequest
             {
                 QuestionId = answerPostRequest.QuestionId,
                 Content = answerPostRequest.Content,

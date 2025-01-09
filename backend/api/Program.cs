@@ -66,6 +66,9 @@ builder.Services.AddAuthorization(options =>
       .Add(new MustBeQuestionAuthorRequirement())));
 builder.Services.AddScoped<IAuthorizationHandler, MustBeQuestionAuthorHandler>();
 
+// Get access to the HTTP request information in a class 
+builder.Services.AddHttpContextAccessor();
+
 
 //builder.Services.AddAuth0WebAppAuthentication(options => {
 //    options.Domain = builder.Configuration["Auth0:Domain"];
@@ -86,7 +89,6 @@ builder.Services.AddScoped<IAuthorizationHandler, MustBeQuestionAuthorHandler>()
 //});
 
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
