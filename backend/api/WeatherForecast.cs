@@ -1,4 +1,4 @@
-namespace QandA
+namespace api
 {
     public class WeatherForecast
     {
