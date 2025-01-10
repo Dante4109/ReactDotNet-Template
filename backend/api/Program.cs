@@ -69,6 +69,14 @@ builder.Services.AddScoped<IAuthorizationHandler, MustBeQuestionAuthorHandler>()
 // Get access to the HTTP request information in a class 
 builder.Services.AddHttpContextAccessor();
 
+// Add CORS Policy
+var frontend = configuration.GetSection("Frontend").Value;
+builder.Services.AddCors(options =>
+options.AddPolicy("CorsPolicy", policy =>
+policy
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .WithOrigins(frontend)));
 
 //builder.Services.AddAuth0WebAppAuthentication(options => {
 //    options.Domain = builder.Configuration["Auth0:Domain"];
@@ -103,6 +111,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseCors("CorsPolicy");
 
 
 app.Run();
