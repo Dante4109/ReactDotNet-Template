@@ -93,15 +93,28 @@ const wait = async (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-export const getQuestion = async (
+/* export const getQuestion = async (
   questionId: number,
 ): Promise<QuestionData | null> => {
   await wait(500);
   const results = questions.filter((q) => q.questionId === questionId);
   return results.length === 0 ? null : results[0];
+}; */
+
+export const getQuestion = async (
+  questionId: number,
+): Promise<QuestionData | null> => {
+  const result = await http<QuestionDataFromServer>({
+    path: `/questions/${questionId}`,
+  });
+  if (result.ok && result.body) {
+    return mapQuestionFromServer(result.body);
+  } else {
+    return null;
+  }
 };
 
-export const searchQuestions = async (
+/* export const searchQuestions = async (
   criteria: string,
 ): Promise<QuestionData[]> => {
   await wait(500);
@@ -110,6 +123,19 @@ export const searchQuestions = async (
       q.title.toLowerCase().indexOf(criteria.toLowerCase()) >= 0 ||
       q.content.toLowerCase().indexOf(criteria.toLowerCase()) >= 0,
   );
+}; */
+
+export const searchQuestions = async (
+  criteria: string,
+): Promise<QuestionData[]> => {
+  const result = await http<QuestionDataFromServer[]>({
+    path: `/questions?search=${criteria}`,
+  });
+  if (result.ok && result.body) {
+    return result.body.map(mapQuestionFromServer);
+  } else {
+    return [];
+  }
 };
 
 export interface PostQuestionData {
