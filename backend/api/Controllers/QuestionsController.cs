@@ -14,7 +14,6 @@ using System.Text.Json;
 
 namespace api.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class QuestionsController : ControllerBase
@@ -32,7 +31,6 @@ namespace api.Controllers
             _auth0UserInfo = $"{configuration["Auth0:Authority"]}userinfo";
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<QuestionGetManyResponse>> GetQuestions(string search, bool includeAnswers, int page = 1, int pageSize = 20)
         {
@@ -75,7 +73,7 @@ namespace api.Controllers
             return question;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         public async Task<ActionResult<QuestionGetSingleResponse>> PostQuestion(QuestionPostRequest questionPostRequest)
         {
