@@ -1,5 +1,5 @@
 import React from 'react';
-import { createAuth0Client, Auth0Client } from '@auth0/auth0-spa-js';
+import createAuth0Client, { Auth0Client } from '@auth0/auth0-spa-js';
 import { authSettings } from './AppSettings';
 
 interface Auth0User {
@@ -37,11 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   React.useEffect(() => {
     const initAuth0 = async () => {
       setLoading(true);
-      const auth0FromHook = await createAuth0Client({
-        domain: authSettings.domain,
-        clientId: authSettings.client_id,
-        authorizationParams: { redirect_uri: authSettings.redirect_uri },
-      });
+      const auth0FromHook = await createAuth0Client(authSettings);
       setAuth0Client(auth0FromHook);
 
       if (
@@ -78,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         signIn: () => getAuth0ClientFromState().loginWithRedirect(),
         signOut: () =>
           getAuth0ClientFromState().logout({
-            clientId: authSettings.client_id,
+            client_id: authSettings.client_id,
             returnTo: window.location.origin + '/signout-callback',
           }),
         loading,
@@ -92,11 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 // TO-DO move to a separate file
 
 export const getAccessToken = async () => {
-  const auth0FromHook = await createAuth0Client({
-    domain: authSettings.domain,
-    clientId: authSettings.client_id,
-    authorizationParams: { redirect_uri: authSettings.redirect_uri },
-  });
+  const auth0FromHook = await createAuth0Client(authSettings);
   const accessToken = await auth0FromHook.getTokenSilently();
   return accessToken;
 };

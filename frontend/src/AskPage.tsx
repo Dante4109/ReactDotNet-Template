@@ -20,16 +20,13 @@ type FormData = {
 };
 
 export const AskPage = () => {
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    formState,
-  } = useForm<FormData>({
-    mode: 'onBlur',
-  });
   const [successfullySubmitted, setSuccessfullySubmitted] =
     React.useState(false);
+
+  const { register, errors, handleSubmit, formState } = useForm<FormData>({
+    mode: 'onBlur',
+  });
+
   const submitForm = async (data: FormData) => {
     const result = await postQuestion({
       title: data.title,
@@ -47,10 +44,16 @@ export const AskPage = () => {
           <FieldContainer>
             <FieldLabel htmlFor="title">Title</FieldLabel>
             <FieldInput
-              {...register('title', { required: true, minLength: 10 })}
+              {...register('title', {
+                required: true,
+                minLength: 10,
+              })}
+              id="title"
+              name="title"
+              type="text"
             />
             {errors.title && errors.title.type === 'required' && (
-              <FieldError>You must enter the question title</FieldError>
+              <FieldError>Your must enter the question title</FieldError>
             )}
             {errors.title && errors.title.type === 'minLength' && (
               <FieldError>The title must be at least 10 characters</FieldError>
@@ -59,14 +62,19 @@ export const AskPage = () => {
           <FieldContainer>
             <FieldLabel htmlFor="content">Content</FieldLabel>
             <FieldTextArea
-              {...register('content', { required: true, minLength: 30 })}
+              {...register('content', {
+                required: true,
+                minLength: 50,
+              })}
+              id="content"
+              name="content"
             />
             {errors.content && errors.content.type === 'required' && (
-              <FieldError>You must enter the question content</FieldError>
+              <FieldError>Your must enter the question content</FieldError>
             )}
             {errors.content && errors.content.type === 'minLength' && (
               <FieldError>
-                The content must be at least 30 characters
+                The content must be at least 50 characters
               </FieldError>
             )}
           </FieldContainer>

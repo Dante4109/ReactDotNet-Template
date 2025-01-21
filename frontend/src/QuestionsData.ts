@@ -1,4 +1,5 @@
 import { http } from './http';
+import { getAccessToken } from './Auth';
 
 export interface QuestionData {
   questionId: number;
@@ -30,41 +31,6 @@ export interface AnswerData {
   created: Date;
 }
 
-const questions: QuestionData[] = [
-  {
-    questionId: 1,
-    title: 'Why should I learn TypeScript?',
-    content:
-      'TypeScript seems to be getting popular so I wondered whether it is worth my time learning it? What benefits does it give over JavaScript?',
-    userName: 'Bob',
-    created: new Date(),
-    answers: [
-      {
-        answerId: 1,
-        content: 'To catch problems earlier speeding up your developments',
-        userName: 'Jane',
-        created: new Date(),
-      },
-      {
-        answerId: 2,
-        content:
-          'So, that you can use the JavaScript features of tomorrow, today',
-        userName: 'Fred',
-        created: new Date(),
-      },
-    ],
-  },
-  {
-    questionId: 2,
-    title: 'Which state management tool should I use?',
-    content:
-      'There seem to be a fair few state management tools around for React - React, Unstated, ... Which one should I use?',
-    userName: 'Bob',
-    created: new Date(),
-    answers: [],
-  },
-];
-
 export const mapQuestionFromServer = (
   question: QuestionDataFromServer,
 ): QuestionData => ({
@@ -89,18 +55,6 @@ export const getUnansweredQuestions = async (): Promise<QuestionData[]> => {
   }
 };
 
-const wait = async (ms: number): Promise<void> => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-};
-
-/* export const getQuestion = async (
-  questionId: number,
-): Promise<QuestionData | null> => {
-  await wait(500);
-  const results = questions.filter((q) => q.questionId === questionId);
-  return results.length === 0 ? null : results[0];
-}; */
-
 export const getQuestion = async (
   questionId: number,
 ): Promise<QuestionData | null> => {
@@ -113,17 +67,6 @@ export const getQuestion = async (
     return null;
   }
 };
-
-/* export const searchQuestions = async (
-  criteria: string,
-): Promise<QuestionData[]> => {
-  await wait(500);
-  return questions.filter(
-    (q) =>
-      q.title.toLowerCase().indexOf(criteria.toLowerCase()) >= 0 ||
-      q.content.toLowerCase().indexOf(criteria.toLowerCase()) >= 0,
-  );
-}; */
 
 export const searchQuestions = async (
   criteria: string,
@@ -148,15 +91,19 @@ export interface PostQuestionData {
 export const postQuestion = async (
   question: PostQuestionData,
 ): Promise<QuestionData | undefined> => {
-  await wait(500);
-  const questionId = Math.max(...questions.map((q) => q.questionId)) + 1;
-  const newQuestion: QuestionData = {
-    ...question,
-    questionId,
-    answers: [],
-  };
-  questions.push(newQuestion);
-  return newQuestion;
+  const accessToken = await getAccessToken();
+  const result = await http<QuestionDataFromServer, PostQuestionData>({
+    path: '/questions',
+    method: 'post',
+    body: question,
+    accessToken,
+  });
+
+  if (result.ok && result.body) {
+    return mapQuestionFromServer(result.body);
+  } else {
+    return undefined;
+  }
 };
 
 export interface PostAnswerData {
@@ -169,14 +116,16 @@ export interface PostAnswerData {
 export const postAnswer = async (
   answer: PostAnswerData,
 ): Promise<AnswerData | undefined> => {
-  await wait(500);
-  const question = questions.filter(
-    (q) => q.questionId === answer.questionId,
-  )[0];
-  const answerInQuestion: AnswerData = {
-    answerId: 99,
-    ...answer,
-  };
-  question.answers.push(answerInQuestion);
-  return answerInQuestion;
+  const accessToken = await getAccessToken();
+  const result = await http<AnswerData, PostAnswerData>({
+    path: '/questions/answer',
+    method: 'post',
+    body: answer,
+    accessToken,
+  });
+  if (result.ok) {
+    return result.body;
+  } else {
+    return undefined;
+  }
 };
