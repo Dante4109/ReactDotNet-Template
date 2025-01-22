@@ -5,6 +5,7 @@ import { authSettings } from './AppSettings';
 interface Auth0User {
   name?: string;
   email?: string;
+  userId?: number;
 }
 interface IAuth0Context {
   isAuthenticated: boolean;

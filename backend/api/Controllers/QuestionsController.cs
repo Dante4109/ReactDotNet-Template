@@ -28,7 +28,7 @@ namespace api.Controllers
             _dataRepository = dataRepository;
             _cache = questionCache;
             _clientFactory = clientFactory;
-            _auth0UserInfo = $"{configuration["Auth0:Authority"]}userinfo";
+            _auth0UserInfo = $"https://{configuration["Auth0:Domain"]}/userinfo";
         }
 
         [HttpGet]
@@ -73,7 +73,7 @@ namespace api.Controllers
             return question;
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<QuestionGetSingleResponse>> PostQuestion(QuestionPostRequest questionPostRequest)
         {
@@ -136,8 +136,8 @@ namespace api.Controllers
             {
                 QuestionId = answerPostRequest.QuestionId,
                 Content = answerPostRequest.Content,
-                UserId = "1",
-                UserName = "bob.test@test.com",
+                UserName = await GetUserName(),
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier).Value,
                 Created = DateTime.UtcNow
             });
             _cache.Remove(answerPostRequest.QuestionId);

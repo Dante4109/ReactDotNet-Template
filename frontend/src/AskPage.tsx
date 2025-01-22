@@ -14,6 +14,8 @@ import {
 import { useForm } from 'react-hook-form';
 import { postQuestion } from './QuestionsData';
 
+import { useAuth } from './Auth';
+
 type FormData = {
   title: string;
   content: string;
@@ -23,15 +25,20 @@ export const AskPage = () => {
   const [successfullySubmitted, setSuccessfullySubmitted] =
     React.useState(false);
 
-  const { register, errors, handleSubmit, formState } = useForm<FormData>({
+  const { register, handleSubmit, formState } = useForm<FormData>({
     mode: 'onBlur',
   });
+
+  const { errors } = formState;
+
+  const { user } = useAuth();
 
   const submitForm = async (data: FormData) => {
     const result = await postQuestion({
       title: data.title,
       content: data.content,
-      userName: 'Fred',
+      userName: user?.email,
+      userId: user?.sub,
       created: new Date(),
     });
     setSuccessfullySubmitted(result ? true : false);

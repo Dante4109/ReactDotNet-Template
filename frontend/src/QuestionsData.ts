@@ -6,6 +6,7 @@ export interface QuestionData {
   title: string;
   content: string;
   userName: string;
+  userId: string;
   created: Date;
   answers: AnswerData[];
 }
@@ -27,7 +28,8 @@ export interface QuestionDataFromServer {
 export interface AnswerData {
   answerId: number;
   content: string;
-  userName: string;
+  userName?: string;
+  userId?: string;
   created: Date;
 }
 
@@ -84,7 +86,8 @@ export const searchQuestions = async (
 export interface PostQuestionData {
   title: string;
   content: string;
-  userName: string;
+  userName?: string;
+  userId?: string;
   created: Date;
 }
 
@@ -109,7 +112,8 @@ export const postQuestion = async (
 export interface PostAnswerData {
   questionId: number;
   content: string;
-  userName: string;
+  userName?: string;
+  userId?: string;
   created: Date;
 }
 

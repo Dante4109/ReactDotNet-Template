@@ -60,11 +60,14 @@ export const QuestionPage = () => {
     mode: 'onBlur',
   });
 
+  const { user } = useAuth();
+
   const submitForm = async (data: FormData) => {
     const result = await postAnswer({
       questionId: question!.questionId,
       content: data.content,
-      userName: 'Fred',
+      userName: user?.email,
+      userId: user?.sub, //ignore red line under sub for now
       created: new Date(),
     });
     setSuccessfullySubmitted(result ? true : false);
