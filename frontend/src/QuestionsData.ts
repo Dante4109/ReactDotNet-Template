@@ -16,6 +16,7 @@ export interface QuestionDataFromServer {
   title: string;
   content: string;
   userName: string;
+  userId: string;
   created: string;
   answers: Array<{
     answerId: number;

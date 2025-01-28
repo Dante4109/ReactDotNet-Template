@@ -38,7 +38,7 @@ export const AskPage = () => {
       title: data.title,
       content: data.content,
       userName: user?.email,
-      userId: user?.sub,
+      userId: user?.sub, //ignore red line under sub for now
       created: new Date(),
     });
     setSuccessfullySubmitted(result ? true : false);

@@ -20,7 +20,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Vitest */
+    "types": ["node", "jsdom", "@types/testing-library__jest-dom"],
+    "composite": true
   },
   "include": ["src"]
 }
