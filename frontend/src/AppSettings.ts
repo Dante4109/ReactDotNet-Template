@@ -1,4 +1,5 @@
 export const server = 'https://localhost:7252';
+// export const server = 'https://localhost:5062';
 
 export const webAPIUrl = `${server}/api`;
 
