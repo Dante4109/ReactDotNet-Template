@@ -6,6 +6,7 @@
 #environment files
 .env
 *.env
+cypress.env.json
 
 # Logs
 logs
